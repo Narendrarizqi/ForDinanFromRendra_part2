@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Celebration</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Updated color scheme to maroon/red */
+            --dark-maroon: #4a1a1a;
+            --maroon: #8b2e2e;
+            --light-maroon: #d63232;
+            --cream: #f9f6f3;
+            --gold: #d4a574;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            background: var(--dark-maroon);
+        }
+
+        .page {
+            min-height: 100vh;
+            display: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Background Slideshow */
+        .slideshow,
+        .page1-slideshow,
+        .page3-slideshow,
+        .page2-slideshow,
+        .page4-slideshow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: max-content;
+            height: 100vh;
+            display: flex;
+            animation: slide 120s linear infinite;
+            z-index: 0;
+        }
+
+        .slideshow img,
+        .page1-slideshow img,
+        .page3-slideshow img,
+        .page2-slideshow img,
+        .page4-slideshow img {
+            width: 50vh;
+            height: 100vh;
+            object-fit: cover;
+            filter: brightness(0.35) sepia(0.2);
+        }
+
+        @keyframes slide {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(-50%); }
+            100% { transform: translateX(0); }
+        }
+
+        /* Updated overlay colors to maroon theme */
+        .overlay,
+        .page2-overlay,
+        .page4-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(135deg, rgba(74, 26, 26, 0.75), rgba(139, 46, 46, 0.65));
+            z-index: 1;
+        }
+
+        /* Added lyrics display styling - HIDDEN on page 4 */
+        .lyrics-display {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            max-width: 400px;
+            color: var(--cream);
+            font-size: 0.95em;
+            line-height: 1.6;
+            z-index: 3;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px 20px;
+            border-left: 3px solid var(--light-maroon);
+            border-radius: 4px;
+            min-height: 80px;
+            font-style: italic;
+        }
+
+        /* Hide lyrics on page 4 */
+        .page.active#page4 ~ .lyrics-display,
+        #page4.active ~ .lyrics-display {
+            display: none;
+        }
+
+        /* Updated music control panel styling with maroon colors */
+        .music-control-panel {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px 25px;
+            border-radius: 8px;
+            border: 2px solid var(--light-maroon);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 3;
+            min-width: 200px;
+        }
+
+        .music-control-panel h3 {
+            color: var(--light-maroon);
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            background: transparent;
+            color: var(--cream);
+            border: 1px solid var(--light-maroon);
+            padding: 8px 12px;
+            font-size: 0.85em;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 60px;
+            /* Make button font bold */
+            font-weight: 700;
+        }
+
+        .control-btn:hover {
+            background: var(--light-maroon);
+            color: var(--cream);
+        }
+
+        .control-btn.active {
+            background: var(--light-maroon);
+            color: var(--cream);
+            font-weight: 700;
+        }
+
+        .music-time {
+            color: #e8d5c4;
+            font-size: 0.85em;
+            text-align: center;
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 40px;
+            max-width: 900px;
+        }
+
+        /* Page 1 Styles */
+        .page1-content h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 4.5em;
+            font-weight: 700;
+            color: var(--cream);
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+            animation: fadeInDown 1s ease;
+        }
+
+        .page1-content p {
+            font-size: 1.1em;
+            color: #e8d5c4;
+            margin-bottom: 50px;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            animation: fadeInUp 1s ease 0.3s backwards;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: center;
+        }
+
+        /* Updated button colors to maroon - Make font bold */
+        .btn-music, .btn-next-page1, .btn-show-message, .btn-page3-nav {
+            background: transparent;
+            color: var(--cream);
+            border: 2px solid var(--light-maroon);
+            padding: 16px 48px;
+            font-size: 1em;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            /* Make all buttons bold */
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-music:hover, .btn-next-page1:hover:not(:disabled), .btn-show-message:hover, .btn-page3-nav:hover {
+            background: var(--light-maroon);
+            color: var(--cream);
+            box-shadow: 0 8px 24px rgba(214, 50, 50, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-music {
+            animation: pulse 2s infinite;
+        }
+
+        .btn-next-page1:disabled {
+            background: transparent;
+            border-color: rgba(214, 50, 50, 0.3);
+            cursor: not-allowed;
+            opacity: 0.4;
+        }
+
+        /* Page 2 Styles */
+        .page2-content {
+            animation: fadeInDown 1s ease;
+            width: 100%;
+        }
+
+        /* Restructured message container for better layout */
+        .message-container {
+            background: transparent;
+            padding: 30px 50px;
+            border-radius: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            gap: 30px;
+            overflow-y: auto;
+            max-height: 90vh;
+        }
+
+        .message-header {
+            opacity: 0;
+            animation: fadeInDown 1s ease 0.2s forwards;
+        }
+
+        .message-header h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--cream);
+            font-size: 2.8em;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            margin-bottom: 12px;
+        }
+
+        .message-divider {
+            width: 60px;
+            height: 2px;
+            background: var(--light-maroon);
+            margin: 0 auto;
+        }
+
+        /* Single message display during typing */
+        .message-text {
+            color: #e8d5c4;
+            font-size: 1.15em;
+            line-height: 1.8;
+            font-weight: 300;
+            letter-spacing: 0.3px;
+            padding: 20px;
+            border-left: 3px solid var(--light-maroon);
+            min-width: 300px;
+            min-height: 150px;
+            flex-shrink: 0;
+        }
+
+        /* Container for all messages display horizontally */
+        .all-messages-container {
+            display: none;
+            flex-direction: row;
+            gap: 20px;
+            max-width: 100%;
+            overflow-x: auto;
+            padding: 20px 0;
+            flex-shrink: 0;
+        }
+
+        .all-messages-container.show {
+            display: flex;
+        }
+
+        .single-message {
+            color: #e8d5c4;
+            font-size: 1em;
+            line-height: 1.6;
+            font-weight: 300;
+            letter-spacing: 0.3px;
+            padding: 15px;
+            border-left: 3px solid var(--light-maroon);
+            min-width: 280px;
+            flex-shrink: 0;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        /* Message counter styling */
+        .click-counter {
+            color: var(--light-maroon);
+            font-size: 0.95em;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-top: 10px;
+        }
+
+        /* Button visibility and styling for slide 2 */
+        .btn-show-message {
+            padding: 14px 32px;
+            font-size: 0.95em;
+            margin-top: 20px;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease 0.5s forwards;
+        }
+
+        .btn-show-message.hidden {
+            display: none;
+        }
+
+        /* Page 3 navigation - only show Next button after 5 seconds */
+        .page3-controls {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            display: flex;
+            gap: 12px;
+            z-index: 9999; /* biar ga ketimpa overlay */
+            transform: translateY(20px);
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards; /* hapus delay */
+        }
+        .page3-controls.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .btn-page3-nav {
+            padding: 14px 28px;
+            font-size: 0.95em;
+            border-radius: 6px;
+        }
+
+        /* Hide back button on page 3 */
+        .page3-controls .btn-page3-nav:first-child {
+            display: none !important;
+        }
+        .page3-controls .btn-page3-nav:last-child {
+            display: block !important;
+        }
+        /* Page 3 Styles */
+        .page3-slideshow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 100vh;
+            display: flex;
+            animation: slide 45s linear infinite;
+            z-index: 0;
+        }
+
+        .page3-slideshow img {
+            width: 50%;
+            height: 100vh;
+            object-fit: cover;
+            filter: brightness(0.4) sepia(0.2);
+        }
+
+        .page3-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .page3-content h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 4em;
+            font-weight: 700;
+            color: var(--cream);
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+            animation: fadeInDown 1s ease;
+        }
+
+        .page3-content p {
+            font-size: 1.2em;
+            color: #e8d5c4;
+            font-weight: 300;
+            animation: fadeInUp 1s ease 0.3s backwards;
+        }
+
+        /* Added Page 4 styles for lyrics display */
+        .page4-slideshow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 100vh;
+            display: flex;
+            animation: slide 60s linear infinite;
+            z-index: 0;
+        }
+
+        .page4-slideshow img {
+            width: 50%;
+            height: 100vh;
+            object-fit: cover;
+            filter: brightness(0.4) sepia(0.2);
+        }
+
+        .page4-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Page 4 lyrics with fade in/out effect */
+        .page4-lyrics {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5em;
+            font-weight: 700;
+            color: var(--cream);
+            text-align: center;
+            max-width: 900px;
+            line-height: 1.4;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        .page4-lyrics.fade-out {
+            opacity: 0;
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.03);
+            }
+        }
+        @keyframes slide {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+        }}
+        @media (max-width: 768px) {
+            .page1-content h1 {
+                font-size: 2.8em;
+            }
+
+            .message-header h2 {
+                font-size: 2em;
+            }
+
+            .message-container {
+                padding: 20px 30px;
+            }
+
+            .message-text {
+                font-size: 1em;
+            }
+
+            .button-group {
+                width: 100%;
+            }
+
+            .page3-content h2 {
+                font-size: 2.5em;
+            }
+
+            .lyrics-display {
+                top: 15px;
+                left: 15px;
+                max-width: 300px;
+                font-size: 0.8em;
+                padding: 10px 15px;
+            }
+
+            .music-control-panel {
+                bottom: 15px;
+                right: 15px;
+                min-width: 180px;
+                padding: 15px 15px;
+            }
+
+            .page4-lyrics {
+                font-size: 2em;
+            }
+
+            .single-message {
+                min-width: 200px;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Audio Player -->
+    <audio id="audioPlayer">
+        <source src="song.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Added lyrics display element -->
+    <div class="lyrics-display" id="lyricsDisplay">
+        <p id="lyricsText">Noel Gallagher's High Flying Birds - Here's A Candle (For Your Birthday Cake)</p>
+    </div>
+
+    <!-- Updated music control panel - removed Pause and Repeat buttons -->
+    <div class="music-control-panel">
+        <div class="control-buttons">
+            <button class="control-btn" id="btnPlay" onclick="playMusic()">Play</button>
+        </div>
+        <div class="music-time">
+            <span id="currentTime">0:00</span> / <span id="duration">0:00</span>
+        </div>
+    </div>
+
+    <!-- Page 1 -->
+    <div class="page active" id="page1">
+        <div class="slideshow" id="slideshow1"></div>
+        <div class="overlay"></div>
+        <div class="content page1-content">
+            <h1>Happy Birthday Dinan Cantik</h1>
+            <p>A special moment to celebrate you</p>
+            <div class="button-group">
+                <button class="btn-music" onclick="playMusic()">
+                    Play a Song
+                </button>
+                <button class="btn-next-page1" id="btnNextPage1" onclick="nextPage(2)" disabled>
+                    Lihat Pesan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 2 -->
+    <div class="page" id="page2">
+        <div class="page2-slideshow" id="slideshow2"></div>
+        <div class="page2-overlay"></div>
+        <div class="content page2-content">
+            <div class="message-container">
+                <div class="message-header">
+                    <h2>Dear Dinan</h2>
+                    <div class="message-divider"></div>
+                </div>
+                <div class="message-text" id="messageText"></div>
+                <!-- Added container to display all messages at once -->
+                <div class="all-messages-container" id="allMessagesContainer"></div>
+                <p class="click-counter" id="clickCounter">Pesan 1 dari 3</p>
+                <button class="btn-show-message" id="btnShowMessage" onclick="showMessage()">
+                    Baca Pesan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 3 -->
+    <div class="page" id="page3">
+        <div class="page3-slideshow" id="slideshow3"></div>
+        <div class="overlay"></div>
+        <div class="content page3-content">
+            <h2>Make a Wish</h2>
+            <p>Semoga semua yang kamu minta bisa dikabulin</p>
+        </div>
+        <div class="page3-controls">
+            <button class="btn-page3-nav" id="btnNextPage3" onclick="nextPage(4)">
+                → Lanjut
+            </button>
+        </div>
+    </div>
+
+    <!-- Added Page 4 with lyrics centered and background -->
+    <div class="page" id="page4">
+        <div class="page4-slideshow" id="slideshow4"></div>
+        <div class="page4-overlay"></div>
+        <div class="content page4-content">
+            <div class="page4-lyrics" id="page4LyricsDisplay">Lyrics will appear here...</div>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        let clickCount = 0;
+        let musicPlayed = false;
+        const audioPlayer = document.getElementById('audioPlayer');
+
+        /* Updated lyrics array to start at 10 seconds */
+        const lyrics = [
+            { time: 9, text: ". . . . . . . ." },
+            { time: 10, text: "Here's a candle for your birthday cake" },
+            { time: 14, text: "There's a wind for the wish you make" },
+            { time: 18, text: "Here's a map for the road you're on" },
+            { time: 23, text: "You need a map 'cos the road is long" },
+            { time: 28, text: "Here's a mirror for the look of love" },
+            { time: 31, text: "And I know you're smiling it's me you're dreaming of" },
+            { time: 37, text: ". . . . . . . ." },
+            { time: 41, text: "Give me wings and I might fly away" },
+            { time: 46, text: "I gaze the weather on a dary day" },
+            { time: 50, text: "I gaze a camera for my old mind's eye" },
+            { time: 55, text: "After three... Lady don't be shy" },
+            { time: 59, text: "I gaze a mirror for the look of love" },
+            { time: 63, text: "And I know when you're smiling it's me you're dreaming of" },
+            { time: 69, text: ". . . . . . . ." },
+            { time: 109, text: "I got my candle of my birthday cake" },
+            { time: 113, text: "I got my dream for the wish I'll make" },
+            { time: 118, text: "I got my map for the road I'm on" },
+            { time: 123, text: "Don't need a map because I won't be long" },
+            { time: 127, text: "I got my mirror and my look of love" },
+            { time: 131, text: "And I know you smile cos it's me you're dreaming of" },
+            { time: 140, text: "And I know you smile cos it's me you're dreaming of" },
+            { time: 148, text: "And I know you smile cos it's me you're dreaming of" },
+            { time: 156, text: ". . . . . . . ." },
+            { time: 161, text: "I LOVE U CANTIK " }
+        ];
+
+        // Messages
+        const messages = [
+            "Selamat ulang taun ke 21 cantik. Sesuai permintaan kamu, website warna merah, semoga kamu suka ya sayang. oiya bacanya agak cepet ya, diakhir sebelum lagu berenti ada suprise lainnya XIXIXI. semoga diumur 21 ini kamu sehat selalu, panjang umur, dimudahkan rezekinya, dimudahkan segala urusannya, dijauhin dari orang-orang yang nyusahin kamu, kita bisa sama-sama terus, semoga semua yang baik-baik bisa kamu dapetin, aamiinn. btw aku bayangin reaksi kamu baca ini, kamu klo salting jadi cantik sama lucu soalnya. jangan kemana-mana sampe lagu abis. ",
+            "Makasih juga buat kamu yang udah baik banget ke aku, bantuin aku kalo lagi kesusahan, masakin aku terus dan enak-enak lagi. Makasih ya udah bisa sabar ngadepin aku, happy terus ya sama aku. Perjalanan kita masih panjang, masih banyak yang harus kita lakuin terutama jalan-jalan ke swiss. Maaf ya ulang taun hari ini kita ga bisa jalan-jalan di hari ulang taun kamu karna ibu dirawat. Kita masih bisa jalan-jalan di hari lain ko, minggu depan atau kapan yang kamu mau aku mau, cuma kalo kepantai paling kyanya ke pantai kita waktu itu doang sayang, menganti atau yang agak kesana lumayan jauh, selain aku yang cape kamu juga pasti cape, kabarin ya pilihan kamu",
+            "Dan juga aku minta maaf ya sayang karna sering bikin kamu bete, nangis, ovt dan semua muanya yang ga kamu suka dari aku, aku berusaha pelan-pelan ilangin kebiasaan itu, kamu juga bantuin dengan bilang yang ga kamu suka ya. Aku mo minta maaf lagi juga soal dompet yang dengan cerbohonya aku ilangin ya sayang, aku gatau cara aku minta maaf cuma rasanya yang kya gitu susah buat dimaafin. Maaf kecerobohan2 ku yang lain juga ya Semoga kamu bisa terus betah sama aku walaupun diluar sana ga cuma 1 2 orang yang lebih dari aku, tapi semoga kamu ga ada pikiran buat pergi dari aku. Aku sayang kamu tau, walaupun kamu ngerasa aku beda dan ga kya pas awal-awal deket tapi percaya sih, aku bukan ilang rasa tapi malah bertambah tiap harinya"
+        ];
+
+        const slideshow2 = document.getElementById('slideshow2');
+        const images1 = [
+            "pict/8.jpg",
+            "pict/9.jpg",
+            "pict/10.jpg",
+            "pict/11.jpg",
+            "pict/12.jpg",
+            "pict/13.jpg",
+            "pict/14.jpg",
+            "pict/15.jpg",
+            "pict/16.jpg",
+            "pict/17.jpg",
+            "pict/18.jpg",
+            "pict/19.jpg",
+            "pict/20.jpg",
+            "pict/21.jpg",
+            "pict/22.jpg",
+            "pict/23.jpg",
+            "pict/24.jpg",
+            "pict/25.jpg",
+            "pict/26.jpg",
+            "pict/27.jpg",
+            "pict/28.jpg",
+            "pict/29.jpg"
+        ];
+        
+        images1.concat(images1).forEach(src => {
+            const img = document.createElement('img');
+            img.src = src;
+            slideshow2.appendChild(img);
+        });
+
+        // Setup slideshow Page 1
+        const slideshow1 = document.getElementById('slideshow1');
+        images1.concat(images1).forEach(src => {
+            const img = document.createElement('img');
+            img.src = src;
+            slideshow1.appendChild(img);
+        });
+
+        // Setup slideshow Page 3
+        const slideshow3 = document.getElementById('slideshow3');
+        const images3 = images1;
+
+        images3.concat(images3).forEach(src => {
+            const img = document.createElement('img');
+            img.src = src;
+            slideshow3.appendChild(img);
+        });
+
+        /* Setup slideshow Page 4 */
+        const slideshow4 = document.getElementById('slideshow4');
+            for (let i = 0; i < 12; i++) {                
+                images1.forEach(src => {
+                    const img = document.createElement('img');
+                    img.src = src;
+                    slideshow4.appendChild(img);
+                    
+                });
+            }
+
+        function playMusic() {
+            audioPlayer.play();
+            musicPlayed = true;
+            updateMusicUI();
+            updateLyrics();
+            document.querySelector('.btn-music').textContent = 'Song Playing';
+            document.querySelector('.btn-music').style.borderColor = 'var(--light-maroon)';
+            document.querySelector('.btn-music').style.color = 'var(--cream)';
+            document.getElementById('btnNextPage1').disabled = false;
+            document.getElementById('btnNextPage1').style.animation = 'pulse 2s infinite';
+        }
+
+        function updateMusicUI() {
+            const btnPlay = document.getElementById('btnPlay');
+            if (audioPlayer.paused) {
+                btnPlay.classList.remove('active');
+            } else {
+                btnPlay.classList.add('active');
+            }
+        }
+
+        function updateLyrics() {
+            const currentTime = audioPlayer.currentTime;
+            const lyricsText = document.getElementById('lyricsText');
+            const page4LyricsDisplay = document.getElementById('page4LyricsDisplay');
+
+            let currentLyric = lyrics[0];
+            for (let i = 0; i < lyrics.length; i++) {
+                if (currentTime >= lyrics[i].time) {
+                    currentLyric = lyrics[i];
+                } else {
+                    break;
+                }
+            }
+
+            lyricsText.textContent = currentLyric.text;
+            
+            /* Add fade in/out effect for page 4 lyrics at specific times */
+            if (currentTime >= 151 && currentTime < 157) {
+                // Fade out between 151-157 seconds
+                const fadeProgress = (currentTime - 151) / (157 - 151);
+                page4LyricsDisplay.classList.add('fade-out');
+                page4LyricsDisplay.style.opacity = 1 - fadeProgress;
+                page4LyricsDisplay.textContent = currentLyric.text;
+            } else if (currentTime >= 157) {
+                // Fade in after 157 seconds
+                page4LyricsDisplay.classList.remove('fade-out');
+                page4LyricsDisplay.style.opacity = 1;
+                page4LyricsDisplay.textContent = currentLyric.text;
+            } else {
+                // Normal display
+                page4LyricsDisplay.classList.remove('fade-out');
+                page4LyricsDisplay.style.opacity = 1;
+                page4LyricsDisplay.textContent = currentLyric.text;
+            }
+
+            if (!audioPlayer.paused) {
+                requestAnimationFrame(updateLyrics);
+            }
+        }
+
+        audioPlayer.addEventListener('loadedmetadata', () => {
+            document.getElementById('duration').textContent = formatTime(audioPlayer.duration);
+        });
+
+        audioPlayer.addEventListener('timeupdate', () => {
+            document.getElementById('currentTime').textContent = formatTime(audioPlayer.currentTime);
+            if (!audioPlayer.paused) {
+                updateLyrics();
+            }
+        });
+
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return '0:00';
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        function nextPage(page) {
+            document.getElementById('page' + currentPage).classList.remove('active');
+            currentPage = page;
+            document.getElementById('page' + currentPage).classList.add('active');
+            
+            // Khusus Page 3: langsung munculkan tombol Next dengan animasi
+            if (page === 3) {
+                const controls = document.querySelector('.page3-controls');
+                if (controls) {
+                    // Paksa reflow dulu supaya animasi jalan
+                    void controls.offsetWidth;
+                    controls.classList.add('visible');
+                }
+            }
+
+            // Reset visibilitas kontrol jika kembali (opsional)
+            if (page !== 3) {
+                const controls = document.querySelector('.page3-controls');
+                if (controls) controls.classList.remove('visible');
+            }
+        }
+
+        /* Updated showMessage function - show one at a time, then all together horizontally */
+        function showMessage() {
+            if (clickCount < 3) {
+                const btn = document.getElementById('btnShowMessage');
+                const messageText = document.getElementById('messageText');
+                const counter = document.getElementById('clickCounter');
+
+                // Display text with typing effect
+                typeMessage(messages[clickCount], messageText, () => {
+                    // Text finished typing - show button
+                    btn.classList.remove('hidden');
+                    btn.classList.add('show');
+                });
+
+                // Update counter
+                counter.textContent = `Pesan ${clickCount + 1} dari 3`;
+
+                // Increment for next click
+                clickCount++;
+
+                // If all messages shown, change button to navigate
+                if (clickCount === 3) {
+                    setTimeout(() => {
+                        btn.textContent = 'Lanjut';
+                        btn.onclick = () => {
+                            clickCount = 0; // Reset for potential re-use
+                            nextPage(3);
+                        };
+                    }, 800);
+                } else {
+                    // Next message button
+                    btn.textContent = 'Pesan Selanjutnya';
+                    btn.onclick = () => {
+                        // Hide text and clear
+                        messageText.textContent = '';
+                        btn.classList.remove('show');
+                        btn.classList.add('hidden');
+                        // Show next message
+                        showMessage();
+                    };
+                }
+            }
+        }
+
+        function typeMessage(text, element, callback) {
+            element.style.display = 'block';
+            element.textContent = '';
+            let i = 0;
+
+            const typeInterval = setInterval(() => {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(typeInterval);
+                    if (callback) callback();
+                }
+            }, 25);
+        }
+    </script>
+</body>
+</html>
